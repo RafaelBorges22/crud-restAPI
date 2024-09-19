@@ -1,0 +1,44 @@
+2 tabelas Produtos e Logs
+2 tipos de endpoint pra Gerenciar produtos e outro pra acessar Logs
+Validar dados de entrada
+
+Tabela produto{
+    Id
+    Nome
+    Descriçao
+    estoque
+    user_insert
+    data_hora
+}
+
+Tabela Logs{
+    Id
+    Ação
+    Data_hora
+    Produto_Id
+    user_insert
+}
+
+regra de negócio: 
+O nome do produto tem que ter no maximo 3 char
+O preço tem que ser um valor positivo
+Estoque deve ser um int >= 0
+
+GET /produtos: Retornar todos os produtos.
+GET /produtos/{id}: Retornar o produto com id especificado.
+
+POST /produtos: Criar um novo produto (com validacao de campos)
+
+PUT /produtos/{id}: Atualizar os dados de um produto existente (com validacao de campos)
+
+DELETE /produtos/{id}: Excluir um produto com o id especificado.
+
+GET /logs: Retornar todos os logs da operacoes realizadas nos produtos
+
+Registro de logs
+
+Toda vez que um produto for criado atualizado ou excluido, 
+uma entrada deve ser registrada na tabela de logs. 
+
+
+
