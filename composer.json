@@ -1,0 +1,15 @@
+{
+    "name": "vendor/backend",
+    "autoload": {
+        "psr-4": {
+            "Vendor\\Backend\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "RafaelBorges22",
+            "email": "rafaelmascarenhasborges@gmail.com"
+        }
+    ],
+    "require": {}
+}
