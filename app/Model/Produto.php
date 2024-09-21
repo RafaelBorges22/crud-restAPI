@@ -27,6 +27,8 @@ class Produto {
         // $preco = $produto->getPreco();
         // $user_insert = $produto->getUserInsert();
 
+        // query
+
         $nome = $data['nome'];
         $descricao = $data['descricao'];
         $estoque = $data['estoque'];
