@@ -104,4 +104,11 @@ class Produto {
         return $this;
     }
 
+    public function deleteProduto($produtoId) {
+        $query = "DELETE FROM produto WHERE produtoId = :produtoId";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":produtoId", $produtoId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
 }
