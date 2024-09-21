@@ -18,7 +18,7 @@ $produto1 = [
     "descricao" => "Camiseta M",
     "estoque" => 100,
     "preco" => 30.00,
-    "userInsert" => "Joao",
+    "user_insert" => "Joao",
 ];
 
 createUser($produto1);

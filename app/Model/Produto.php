@@ -31,12 +31,12 @@ class Produto {
         $descricao = $data['descricao'];
         $estoque = $data['estoque'];
         $preco = $data['preco'];
-        $userInsert = $data['userInsert'];
+        $user_insert = $data['user_insert'];
 
         // var_dump($produto);
 
-        $query = "INSERT INTO $this->table (nome, descricao, estoque, preco, userInsert) 
-            VALUES (:nome, :descricao, :estoque, :preco, :userInsert)";
+        $query = "INSERT INTO $this->table (nome, descricao, estoque, preco, user_insert) 
+            VALUES (:nome, :descricao, :estoque, :preco, :user_insert)";
 
         $stmt = $this->conn->prepare($query);
 
@@ -44,7 +44,7 @@ class Produto {
         $stmt->bindParam(":descricao", $descricao);
         $stmt->bindParam(":estoque", $estoque);
         $stmt->bindParam(":preco", $preco);
-        $stmt->bindParam(":userInsert", $userInsert);
+        $stmt->bindParam(":user_insert", $user_insert);
 
         return $stmt->execute();
 
