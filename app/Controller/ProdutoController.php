@@ -6,7 +6,6 @@ use app\Model\Produto;
 class ProdutoController {
     private $produto;
 
-    // Construtor com nome correto
     public function __construct(Produto $model) {
         $this->produto = $model;
     }
