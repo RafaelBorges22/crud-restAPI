@@ -1,0 +1,20 @@
+-- SQLite
+
+CREATE TABLE produtos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL,
+    descricao TEXT NOT NULL,
+    estoque INTEGER NOT NULL,
+    preco REAL NOT NULL,
+    user_insert TEXT NOT NULL,
+    data_hora DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    acao TEXT NOT NULL,
+    data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
+    produto_id INTEGER NOT NULL,
+    user_insert TEXT NOT NULL,
+    FOREIGN KEY (produto_id) REFERENCES produtos(id) ON DELETE CASCADE
+);
