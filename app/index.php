@@ -40,11 +40,15 @@ switch($_SERVER['REQUEST_METHOD']) {
         }
     break;
     case 'DELETE':
-        $id = isset($_GET['id']) ? $_GET['id'] : null;
-        if ($id === null) {
+
+        if(preg_match('/\/produtos\/(\d+)/', $uri, $match)){
+            $id = $match[1];
+            $data = json_decode(file_get_contents('php://input'));
+            $controller->delete($id);
+            break;
+        } else {
             http_response_code(405); // Not allowed
         }
-        $controller->delete($id);
         break;
     default:
         echo "Hello";

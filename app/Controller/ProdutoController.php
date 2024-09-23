@@ -53,6 +53,7 @@ class ProdutoController {
             echo json_encode(["error" => "Dados incompletos"]);
         }
 
+        $this->produto->setProdutoId($id);
         $this->produto->setNome($data->nome);
         $this->produto->setDescricao($data->descricao);
         $this->produto->setPreco($data->preco);

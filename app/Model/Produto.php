@@ -98,7 +98,7 @@ class Produto {
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getProdutoById($produtoId) {
@@ -118,7 +118,13 @@ class Produto {
         $preco = $this->getPreco();
         $user_insert = $this->getUserInsert();
 
-        $query = "UPDATE $this->table SET nome = :nome, descricao = :descricao, estoque = :estoque, preco = :preco, user_insert = :user_insert WHERE id = :produto_id";
+        $query = "UPDATE $this->table 
+                SET nome = :nome, 
+                    descricao = :descricao, 
+                    estoque = :estoque, 
+                    preco = :preco, 
+                    user_insert = :user_insert 
+                WHERE id = :produto_id";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":nome", $nome);
@@ -126,6 +132,7 @@ class Produto {
         $stmt->bindParam(":estoque", $estoque);
         $stmt->bindParam(":preco", $preco);
         $stmt->bindParam(":user_insert", $user_insert);
+        $stmt->bindParam(":produto_id", $produto_id);
 
         return $stmt->execute();
     }
