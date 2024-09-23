@@ -20,38 +20,6 @@ class Produto {
         $this->conn = Database::getInstance();
     }
 
-    public function insertProduto($data) {
-        // $nome = $produto->getNome();
-        // $descricao = $produto->getDescricao();
-        // $estoque = $produto->getEstoque();
-        // $preco = $produto->getPreco();
-        // $user_insert = $produto->getUserInsert();
-
-        // query
-
-        $nome = $data['nome'];
-        $descricao = $data['descricao'];
-        $estoque = $data['estoque'];
-        $preco = $data['preco'];
-        $user_insert = $data['user_insert'];
-
-        // var_dump($produto);
-
-        $query = "INSERT INTO $this->table (nome, descricao, estoque, preco, user_insert) 
-            VALUES (:nome, :descricao, :estoque, :preco, :user_insert)";
-
-        $stmt = $this->conn->prepare($query);
-
-        $stmt->bindParam(":nome", $nome);
-        $stmt->bindParam(":descricao", $descricao);
-        $stmt->bindParam(":estoque", $estoque);
-        $stmt->bindParam(":preco", $preco);
-        $stmt->bindParam(":user_insert", $user_insert);
-
-        return $stmt->execute();
-
-    }
-
     public function getProdutoId() {
         return $this->produtoId;
     }
@@ -104,4 +72,69 @@ class Produto {
         return $this;
     }
 
+    public function insertProduto($produto) {
+        $nome = $this->getNome();
+        $descricao = $this->getDescricao();
+        $estoque = $this->getEstoque();
+        $preco = $this->getPreco();
+        $user_insert = $this->getUserInsert();
+
+        $query = "INSERT INTO $this->table (nome, descricao, estoque, preco, user_insert) 
+            VALUES (:nome, :descricao, :estoque, :preco, :user_insert)";
+
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->bindParam(":nome", $nome);
+        $stmt->bindParam(":descricao", $descricao);
+        $stmt->bindParam(":estoque", $estoque);
+        $stmt->bindParam(":preco", $preco);
+        $stmt->bindParam(":user_insert", $user_insert);
+
+        return $stmt->execute();
+    }
+
+    public function getAllProdutos() {
+        $query = "SELECT * FROM $this->table";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getProdutoById($produtoId) {
+        $query = "SELECT * FROM $this->table WHERE id = :produtoId";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":produtoId", $produtoId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function updateProduto($produto) {
+        $produto_id = $this->getProdutoId();
+        $nome = $this->getNome();
+        $descricao = $this->getDescricao();
+        $estoque = $this->getEstoque();
+        $preco = $this->getPreco();
+        $user_insert = $this->getUserInsert();
+
+        $query = "UPDATE $this->table SET nome = :nome, descricao = :descricao, estoque = :estoque, preco = :preco, user_insert = :user_insert WHERE id = :produto_id";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":nome", $nome);
+        $stmt->bindParam(":descricao", $descricao);
+        $stmt->bindParam(":estoque", $estoque);
+        $stmt->bindParam(":preco", $preco);
+        $stmt->bindParam(":user_insert", $user_insert);
+
+        return $stmt->execute();
+    }
+
+    public function deleteProduto($produto_id) { 
+        $query = "DELETE FROM $this->table WHERE id = :produto_id";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":produto_id", $produto_id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
 }
