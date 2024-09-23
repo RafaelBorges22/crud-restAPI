@@ -12,7 +12,7 @@ class ProdutoController {
     }
 
     public function create($data) {
-        if (!isset($data->nome, $data->descricao, $data->estoque, $data->preco, $user_insert)) {
+        if (!isset($data->nome) || !isset($data->descricao) || !isset($data->estoque) || !isset($data->preco) || !isset($data->user_insert)) {
             http_response_code(400);
             echo json_encode(["error" => "Dados incompletos"]);
         }
@@ -48,7 +48,7 @@ class ProdutoController {
     }
 
     public function update($id, $data) {
-        if (!isset($data->nome, $data->descricao, $data->estoque, $data->preco, $user_insert)) {
+        if (!isset($data->nome) || !isset($data->descricao) || !isset($data->estoque) || !isset($data->preco) || !isset($data->user_insert)) {
             http_response_code(400);
             echo json_encode(["error" => "Dados incompletos"]);
         }

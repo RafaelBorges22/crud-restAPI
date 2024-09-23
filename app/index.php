@@ -7,6 +7,9 @@ require_once "../vendor/autoload.php";
 use App\Controller\ProdutoController;
 use App\Model\Produto;
 
+use App\Controller\LogController;
+use App\Model\Log;
+
 $produto = new Produto();
 $controller = new ProdutoController($produto);
 
@@ -20,15 +23,26 @@ $uri = $_SERVER['REQUEST_URI'];
 
 switch($_SERVER['REQUEST_METHOD']) {
     case 'GET':
-        if(preg_match('/\/produtos\/(\d+)/', $uri, $match)){
-            $id = $match[1];
-            $data = json_decode(file_get_contents('php://input'));
-            $controller->read($id);
+        switch($uri) {
+            case '/produtos':
+                if(preg_match('/\/produtos\/(\d+)/', $uri, $match)){
+                    $id = $match[1];
+                    $data = json_decode(file_get_contents('php://input'));
+                    $controller->read($id);
+                    break;
+                } else {
+                    $controller->read();
+                }
             break;
-        } else {
-            $controller->read();
+            case '/logs':
+                $log = new Log();
+                $logController = new LogController($log);
+
+                $logController->read();
+            break;
         }
-        break;
+    break;
+
     case 'POST':
         $controller->create($data);
         break;

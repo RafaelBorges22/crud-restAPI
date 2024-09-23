@@ -79,10 +79,10 @@ class Produto {
         $preco = $this->getPreco();
         $user_insert = $this->getUserInsert();
 
-        $query = "INSERT INTO $this->table (nome, descricao, estoque, preco, user_insert) 
+        $query1 = "INSERT INTO $this->table (nome, descricao, estoque, preco, user_insert) 
             VALUES (:nome, :descricao, :estoque, :preco, :user_insert)";
 
-        $stmt = $this->conn->prepare($query);
+        $stmt = $this->conn->prepare($query1);
 
         $stmt->bindParam(":nome", $nome);
         $stmt->bindParam(":descricao", $descricao);
@@ -90,7 +90,18 @@ class Produto {
         $stmt->bindParam(":preco", $preco);
         $stmt->bindParam(":user_insert", $user_insert);
 
-        return $stmt->execute();
+        $stmt->execute();
+
+        $acao = "CRIACAO PRODUTO";
+
+        $query2 = "INSERT INTO logs (acao, produto_id, user_insert) VALUES (:acao, :produto_id, :user_insert)";
+        $logStmt = $this->conn->prepare($query2);
+
+        $logStmt->bindValue(":acao", $acao);
+        $logStmt->bindValue(":produto_id", $this->conn->lastInsertId());
+        $logStmt->bindValue(":user_insert", $user_insert);
+
+        return $logStmt->execute();
     }
 
     public function getAllProdutos() {
@@ -118,7 +129,7 @@ class Produto {
         $preco = $this->getPreco();
         $user_insert = $this->getUserInsert();
 
-        $query = "UPDATE $this->table 
+        $query1 = "UPDATE $this->table 
                 SET nome = :nome, 
                     descricao = :descricao, 
                     estoque = :estoque, 
@@ -126,7 +137,7 @@ class Produto {
                     user_insert = :user_insert 
                 WHERE id = :produto_id";
 
-        $stmt = $this->conn->prepare($query);
+        $stmt = $this->conn->prepare($query1);
         $stmt->bindParam(":nome", $nome);
         $stmt->bindParam(":descricao", $descricao);
         $stmt->bindParam(":estoque", $estoque);
@@ -134,14 +145,45 @@ class Produto {
         $stmt->bindParam(":user_insert", $user_insert);
         $stmt->bindParam(":produto_id", $produto_id);
 
-        return $stmt->execute();
+        $stmt->execute();
+
+        $acao = "ATUALIZAO PRODUTO";
+
+        $query2 = "INSERT INTO logs (acao, produto_id, user_insert) VALUES (:acao, :produto_id, :user_insert)";
+        $logStmt = $this->conn->prepare($query2);
+
+        $logStmt->bindValue(":acao", $acao);
+        $logStmt->bindValue(":produto_id", $produto_id);
+        $logStmt->bindValue(":user_insert", $user_insert);
+
+        return $logStmt->execute();
     }
 
     public function deleteProduto($produto_id) { 
-        $query = "DELETE FROM $this->table WHERE id = :produto_id";
+        $query1 = "SELECT user_insert FROM $this->table WHERE id = :produto_id";
+        $stmt = $this->conn->prepare($query1);
+        $stmt->bindValue(':produto_id', $produto_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $produto = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(":produto_id", $produto_id, PDO::PARAM_INT);
-        return $stmt->execute();
+        $query2 = "DELETE FROM $this->table WHERE id = :produto_id";
+
+        $deleteStmt = $this->conn->prepare($query2);
+        $deleteStmt->bindParam(":produto_id", $produto_id, PDO::PARAM_INT);
+
+        $deleteStmt->execute();
+
+        $user_insert = $produto['user_insert'];
+
+        $acao = "EXCLUSAO PRODUTO";
+
+        $query3 = "INSERT INTO logs (acao, produto_id, user_insert) VALUES (:acao, :produto_id, :user_insert)";
+        $logStmt = $this->conn->prepare($query3);
+
+        $logStmt->bindValue(":acao", $acao);
+        $logStmt->bindValue(":produto_id", $produto_id);
+        $logStmt->bindValue(":user_insert", $user_insert);
+
+        return $logStmt->execute();
     }
 }
