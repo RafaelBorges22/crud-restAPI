@@ -1,110 +1,81 @@
 <?php
-namespace app\Controller;
 
-use app\Model\Produto;
+namespace App\Controller;
 
-class ProdutoController {
-    private $produto;
+use App\Model\Produto;
+use PDOException;
 
-    public function __construct(Produto $model) {
-        $this->produto = $model;
-    }
+class ControllerProduto {
 
-    public function create($data) {
-        if (!isset($data->produtoId, $data->nome, $data->descricao)) {
-            http_response_code(400);
-            echo json_encode(["error" => "Dados incompletos"]);
-            return;
-        }
-
-        $ProdutoExistente = $this->produto->getProdutoId($data->produtoId);
-        if ($ProdutoExistente) {
-            http_response_code(409);
-            echo json_encode(["error" => "Esse produto já existe."]);
-            return;
-        }
-
+    public function createProduto($request) {
         $produto = new Produto();
-        $produto->setNome($data->nome);
-        $produto->setProdutoId($data->produtoId);
-        $produto->setDescricao($data->descricao);
+        
+        $data = [
+            'nome' => $request['nome'],
+            'descricao' => $request['descricao'],
+            'estoque' => $request['estoque'],
+            'preco' => $request['preco'],
+            'user_insert' => $request['user_insert']
+        ];
 
-        if ($this->produto->insertProduto($produto)) {
-            http_response_code(201);
-            echo json_encode(["message" => "Produto criado com sucesso!"]);
-        } else {
-            http_response_code(500);
-            echo json_encode(["error" => "Falha ao criar o produto."]);
+        try {
+            $produto->insertProduto($data);
+            echo "Produto criado com sucesso!";
+        } catch (PDOException $e) {
+            echo "Erro ao criar o produto: " . $e->getMessage();
         }
     }
 
-    public function login($data) {
-        if (!isset($data->user_insert)) {
-            http_response_code(400);
-            echo json_encode(["error" => "Precisa preencher o campo de usuário para login"]);
-            return;
-        }
-
-        $produto = $this->produto->getUserInsert($data->user_insert);
-        if ($produto($data->user_insert, $produto["user_insert"])) {
-            unset($produto['user_insert']);
-            http_response_code(200);
-            echo json_encode(["message" => "Login bem sucedido", "user_insert" => $produto]);
-        } else {
-            http_response_code(401);
-            echo json_encode(["error" => "Nome de usuario inválido"]);
+    public function listProdutos() {
+        $produto = new Produto();
+        try {
+            $produtos = $produto->getAllProdutos();  
+            return $produtos;  
+        } catch (PDOException $e) {
+            echo "Erro ao listar produtos: " . $e->getMessage();
         }
     }
 
-    public function read($id = null) {
-        if ($id) {
-            $result = $this->produto->getProdutoId($id);
-            if($result){
-                unset($result['senha']);
-                $status = 200 ;
-            }else{
-                $status = 404;
+    public function getProduto($produtoId) {
+        $produto = new Produto();
+        try {
+            $produtoData = $produto->getProdutoId($produtoId); 
+            if ($produtoData) {
+                return $produtoData;
+            } else {
+                echo "Produto não encontrado.";
             }
-            
-        } else {
-            $result = $this->produto->getProdutoId();
-            foreach ($result as &$produto) {
-                unset($produto['senha']);
-            }
-            unset($produto);
-            $status = !empty($result) ? 200 : 404;
-        }
-        http_response_code($status);
-        echo json_encode($result ?: ["message"=>"nenhum produto encontrado"]);
-    }
-
-    public function update($id, $data) {
-        if (!isset($data->nome, $data->descricao, $data->preco)) {
-            http_response_code(400);
-            echo json_encode(["error" => "Dados incompletos para atualização do produto"]);
-            return;
-        }
-
-        $this->produto->setProdutoId($id)->setNome($data->nome)->setDescricao($data->descricao)->setPreco($data->preco);
-
-        if ($this->produto->insertProduto($this->produto)) {
-            http_response_code(200);
-            echo json_encode(["message" => "Produto atualizado com sucesso"]);
-        } else {
-            http_response_code(500);
-            echo json_encode(["error" => "Erro ao atualizar produto"]);
+        } catch (PDOException $e) {
+            echo "Erro ao buscar produto: " . $e->getMessage();
         }
     }
 
-    public function delete($id) {
-        if ($this->produto->deleteProduto($id)) {
-            http_response_code(200);
-            echo json_encode(["message" => "Produto excluído com sucesso"]);
-        } else {
-            http_response_code(500);
-            echo json_encode(["error" => "Erro ao excluir produto"]);
+    public function updateProduto($produtoId, $request) {
+        $produto = new Produto();
+        try {
+            $produto->setProdutoId($produtoId)
+                    ->setNome($request['nome'])
+                    ->setDescricao($request['descricao'])
+                    ->setEstoque($request['estoque'])
+                    ->setPreco($request['preco'])
+                    ->setUserInsert($request['user_insert']);
+                    
+           // $produto->insertProduto($data);  
+
+            echo "Produto atualizado com sucesso!";
+        } catch (PDOException $e) {
+            echo "Erro ao atualizar o produto: " . $e->getMessage();
         }
     }
 
+    public function deleteProduto($produtoId) {
+        $produto = new Produto();
+        try {
+            $produto->deleteProduto($produtoId);
+            echo "Produto excluído com sucesso!";
+        } catch (PDOException $e) {
+            echo "Erro ao excluir o produto: " . $e->getMessage();
+        }
+    }
 }
 

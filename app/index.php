@@ -4,10 +4,10 @@ namespace App;
 
 require_once "../vendor/autoload.php";
 
-use App\Model\Produto;
+use app\Model\Produto;
 use App\Controller\ProdutoController;
 
-function createUser($data) {
+function createUsers($data) {
     $produto = new Produto();
 
     $produto->insertProduto($data);
@@ -22,11 +22,10 @@ $produto1 = [
     "user_insert" => "Joao",
 ];
 
-createUser($produto1);
+createUsers($produto1);
 
 
-//rota controller
-
+/*rota controller
 $produtoModel = new Produto();
 $controller = new ProdutoController($produtoModel);
 
@@ -81,3 +80,4 @@ switch ($url) {
         echo json_encode(["error" => "Rota não encontrada"]);
         break;
 }
+*/

@@ -111,4 +111,22 @@ class Produto {
         return $stmt->execute();
     }
 
+    public function getAllProdutos() {
+        $query = "SELECT * FROM $this->table";
+
+        $stmt = $this->conn->prepare($query);
+
+        try {
+            $stmt->execute();
+
+            $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $produtos;
+
+        } catch (PDOException $e) {
+            echo "Erro ao buscar produtos: " . $e->getMessage();
+            return [];
+        }
+    }
+
 }
