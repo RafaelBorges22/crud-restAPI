@@ -1,8 +1,8 @@
 {
-    "name": "vendor/backend",
+    "name": "app/app",
     "autoload": {
         "psr-4": {
-            "Vendor\\Backend\\": "src/"
+            "App\\": "app/"
         }
     },
     "authors": [

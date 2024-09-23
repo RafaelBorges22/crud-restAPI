@@ -4,21 +4,66 @@ namespace App;
 
 require_once "../vendor/autoload.php";
 
+use App\Controller\ProdutoController;
 use App\Model\Produto;
 
-function createUser($data) {
-    $produto = new Produto();
+use App\Controller\LogController;
+use App\Model\Log;
 
-    $produto->insertProduto($data);
+$produto = new Produto();
+$controller = new ProdutoController($produto);
 
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit(0);
 }
 
-$produto1 = [
-    "nome" => "Camiseta",
-    "descricao" => "Camiseta M",
-    "estoque" => 100,
-    "preco" => 30.00,
-    "user_insert" => "Joao",
-];
+$data = json_decode(file_get_contents("php://input"));
 
-createUser($produto1);
+$uri = $_SERVER['REQUEST_URI'];
+
+switch($_SERVER['REQUEST_METHOD']) {
+    case 'GET':
+        switch($uri) {
+            case '/produtos':
+                if(preg_match('/\/produtos\/(\d+)/', $uri, $match)){
+                    $id = $match[1];
+                    $data = json_decode(file_get_contents('php://input'));
+                    $controller->read($id);
+                    break;
+                } else {
+                    $controller->read();
+                }
+            break;
+            case '/logs':
+                $log = new Log();
+                $logController = new LogController($log);
+
+                $logController->read();
+            break;
+        }
+    break;
+
+    case 'POST':
+        $controller->create($data);
+        break;
+    case 'PUT':
+        if(preg_match('/\/produtos\/(\d+)/', $uri, $match)){
+            $id = $match[1];
+            $data = json_decode(file_get_contents('php://input'));
+            $controller->update($id, $data);
+        }
+    break;
+    case 'DELETE':
+
+        if(preg_match('/\/produtos\/(\d+)/', $uri, $match)){
+            $id = $match[1];
+            $data = json_decode(file_get_contents('php://input'));
+            $controller->delete($id);
+            break;
+        } else {
+            http_response_code(405); // Not allowed
+        }
+        break;
+    default:
+        echo "Hello";
+}
