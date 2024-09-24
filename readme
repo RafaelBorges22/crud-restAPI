@@ -1,44 +1,43 @@
-2 tabelas Produtos e Logs
-2 tipos de endpoint pra Gerenciar produtos e outro pra acessar Logs
-Validar dados de entrada
+# CRUD REST 
+Aplicação backend CRUD (Create, Read, Update & Delete) simples desenvolvida com PHP e SQLite <br>
 
-Tabela produto{
-    Id
-    Nome
-    Descriçao
-    estoque
-    user_insert
-    data_hora
-}
+Alvaro Barbosa Sena <br>
+Rafael Mascarenhas Borges
 
-Tabela Logs{
-    Id
-    Ação
-    Data_hora
-    Produto_Id
-    user_insert
-}
+## 🚀 Funcionalidadeas
 
-regra de negócio: 
-O nome do produto tem que ter no maximo 3 char
-O preço tem que ser um valor positivo
-Estoque deve ser um int >= 0
+- Listagem de produtos
+- Listagem de um produto específico
+- Criação de produto
+- Atualização de produto
+- Exclusão de produto
+- Listagem de logs
 
-GET /produtos: Retornar todos os produtos.
-GET /produtos/{id}: Retornar o produto com id especificado.
+## Relatório Técnico
 
-POST /produtos: Criar um novo produto (com validacao de campos)
+### Desenvolvimento, dificuldades e soluções de problemas
 
-PUT /produtos/{id}: Atualizar os dados de um produto existente (com validacao de campos)
+A aplicação foi desenvolvida utilizando a arquitetura MVC (Model, View & Controller), sendo o Model a camada mais íntima da aplicação e os "controllers", a camada mais acessível. 
+Para a persistência de manutenibilidade dos dados, foi implementado o banco de dados SQLite. Ao implementá-lo, surgiram várias dificuldades: a primeira foi habilitar o driver e depois fazê-lo conectar com o banco no momento em que classe era instanciada. Resolvemos o problema criando a conexão no próprio construtor <i>__construct</i> da classe.
 
-DELETE /produtos/{id}: Excluir um produto com o id especificado.
+Ademais, também foi implementado validações na camada do "controller" do produto, para garantir que os dados fossem válidos, como a verificação do nome do produto, do estoque e preço.
 
-GET /logs: Retornar todos os logs da operacoes realizadas nos produtos
+O logs foram implementados no momento das queries no model de produto. No momento que o produto é cadastrado, atualizado ou excluído, um log é criado no sistema. Porém, encontramos dificuldades para fazê-lo, sobretudo quando um produto é excluído, pois o <i>user_insert</i> é um atributo da tabela de Log. Portanto, fizemos uma segunda query, antes da exclusão do produto, para pegar o atributo e, só assim, finalizar a operação. 
 
-Registro de logs
+## 👨‍💻 Começando
 
-Toda vez que um produto for criado atualizado ou excluido, 
-uma entrada deve ser registrada na tabela de logs. 
+```
+$ git clone https://github.com/RafaelBorges22/crud-restAPI.git
+````
 
+```
+$ cd crud-restAPI/
+````
 
+```
+$ cd app/
+````
 
+```
+$ php -S localhost:8080
+````
