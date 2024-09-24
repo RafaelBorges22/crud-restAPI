@@ -15,20 +15,29 @@ class ProdutoController {
         if (!isset($data->nome) || !isset($data->descricao) || !isset($data->estoque) || !isset($data->preco) || !isset($data->user_insert)) {
             http_response_code(400);
             echo json_encode(["error" => "Dados incompletos"]);
-        }
-
-        $this->produto->setNome($data->nome);
-        $this->produto->setDescricao($data->descricao);
-        $this->produto->setPreco($data->preco);
-        $this->produto->setEstoque($data->estoque);
-        $this->produto->setUserInsert($data->user_insert);
-
-        if ($this->produto->insertProduto($this->produto)) {
-            http_response_code(201);
-            echo json_encode(["message" => "Produto criado com sucesso."]);
+        } else if (strlen($data->nome) < 3) {
+            http_response_code(400);
+            echo json_encode(["error" => "O produto deve ter no minimo 3 caracteres"]);
+        } else if ($data->preco < 1) {
+            http_response_code(400);
+            echo json_encode(["error" => "O preço deve ser um valor positivo"]);
+        } else if ($data->estoque < 0) {
+            http_response_code(400);
+            echo json_encode(["error" => "O estoque deve ser maior ou igual a zero"]);
         } else {
-            http_response_code(500);
-            echo json_encode(["error" => "Erro ao criar produto."]);
+            $this->produto->setNome($data->nome);
+            $this->produto->setDescricao($data->descricao);
+            $this->produto->setPreco($data->preco);
+            $this->produto->setEstoque($data->estoque);
+            $this->produto->setUserInsert($data->user_insert);
+    
+            if ($this->produto->insertProduto($this->produto)) {
+                http_response_code(201);
+                echo json_encode(["message" => "Produto criado com sucesso."]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["error" => "Erro ao criar produto."]);
+            }
         }
     }
 
