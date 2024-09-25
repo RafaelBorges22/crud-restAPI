@@ -23,24 +23,23 @@ $uri = $_SERVER['REQUEST_URI'];
 
 switch($_SERVER['REQUEST_METHOD']) {
     case 'GET':
-        switch($uri) {
-            case '/produtos':
-                if(preg_match('/\/produtos\/(\d+)/', $uri, $match)){
-                    $id = $match[1];
-                    $data = json_decode(file_get_contents('php://input'));
-                    $controller->read($id);
-                    break;
-                } else {
-                    $controller->read();
-                }
-            break;
-            case '/logs':
-                $log = new Log();
-                $logController = new LogController($log);
+        if (str_contains($uri, '/produtos')) {
+            if(preg_match('/\/produtos\/(\d+)/', $uri, $match)){
+                $id = $match[1];
+                $data = json_decode(file_get_contents('php://input'));
+                $controller->read($id);
+            } else {
+                $controller->read();
+            }
+        } else if ($uri === '/logs') {
+            $log = new Log();
+            $logController = new LogController($log);
 
-                $logController->read();
-            break;
+            $logController->read();
+        } else {
+            echo json_encode(["message" => "Hello, World"]);
         }
+
     break;
 
     case 'POST':

@@ -45,7 +45,6 @@ class ProdutoController {
         if ($id) {
             $result = $this->produto->getProdutoById($id);
 
-            
             http_response_code(200);;
             echo json_encode($result);
         } else {
