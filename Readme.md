@@ -24,6 +24,27 @@ Ademais, também foi implementado validações na camada do "controller" do prod
 
 O logs foram implementados no momento das queries no model de produto. No momento que o produto é cadastrado, atualizado ou excluído, um log é criado no sistema. Porém, encontramos dificuldades para fazê-lo, sobretudo quando um produto é excluído, pois o <i>user_insert</i> é um atributo da tabela de Log. Portanto, fizemos uma segunda query, antes da exclusão do produto, para pegar o atributo e, só assim, finalizar a operação. 
 
+
+### Endpoints
+
+<strong>GET /logs</strong>
+<img src="./public/getLogs.jpg">
+
+<strong>GET /produtos</strong>
+<img src="./public/getProdutos.png">
+
+<strong>GET /produtos/{id}</strong>
+<img src="./public/getProdutoById.png">
+
+<strong>POST /produtos</strong>
+<img src="./public/postProduto.jpg">
+
+<strong>PUT /produtos/{id}</strong>
+<img src="./public/putProduto.jpg">
+
+<strong>DELETE /produtos/{id}</strong>
+<img src="./public/deleteProduto.jpg">
+
 ## 👨‍💻 Começando
 
 ```
