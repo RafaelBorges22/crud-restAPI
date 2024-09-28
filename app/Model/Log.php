@@ -11,6 +11,7 @@ class Log {
     private $data_hora;
     private $produto_id;
     private $user_insert;
+    private $conn;
     private $table = 'logs';
     
     public function __construct() {
@@ -27,7 +28,7 @@ class Log {
     }
 
     public function getAcao() {
-        return $this->logId;
+        return $this->acao;
     }
 
     public function setAcao($acao): self {

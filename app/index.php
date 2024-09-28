@@ -10,6 +10,10 @@ use App\Model\Produto;
 use App\Controller\LogController;
 use App\Model\Log;
 
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
 $produto = new Produto();
 $controller = new ProdutoController($produto);
 
