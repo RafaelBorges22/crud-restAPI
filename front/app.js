@@ -2,82 +2,103 @@ const app = Vue.createApp({
   data() {
     return {
       produtos: [],
-      busca: '',
       produto: {
         id_produto: null,
         nome: '',
         preco: '',
         estoque: '',
-        descricao:'',
+        descricao: '',
       },
       editando: false,
-      url: 'http://localhost:8080/users',
+      url: 'http://localhost:8080/users', // URL fictícia para exemplos
     };
   },
 
-  computed: {
-    ProdutosFiltrados() {
-      if (!this.produtos || this.produtos.length === 0) {
-        return [];
-      }
-
-      return this.produtos.filter(produto => {
-        return produto.nome && produto.nome.toLowerCase().includes(this.busca.toLowerCase());
-      });
-    }
-  },
-
   methods: {
-    listarProdutos(){
-      fetch(this.url)
-      .then(response=>response.json())
-      .then(data=>{
-        this.produto = data;
-      })
-      .catch(error=>console.error('Erro ao listar Produto: '),error)
+    listarProdutos() {
+      this.produtos = [
+      ];
     },
-    cadastrarProduto(){
+
+    cadastrarProduto() {
       if (this.editando) {
         this.atualizarProduto();
-      }else{
+      } else {
         this.criarProduto();
       }
     },
 
-    criarProduto(){
-      fetch(this.url,{
-        method: 'POST',
-        headers:{
-          'Content-Type': 'aplication/json',
-        },
-        body: JSON.stringify(this.produto),
-      })
-        .then(response=>response.json())
-        .then(data=>{
-          this.produtos.push(data);
-        })
-        .catch(error=>console.error('Erro ao criar produto ', error));
-
+    criarProduto() {
+      const novoProduto = { ...this.produto, id_produto: Date.now() };
+      this.produtos.push(novoProduto);
+      this.resetForm();
     },
 
-    editarProduto(Produto){
-      this.produto = {...Produto};
-      this.update = true;
+    editarProduto(produto) {
+      this.produto = { ...produto };
+      this.editando = true;
     },
-    atualizarProduto(){
-      fetch(`${this.url}/${this.usuario.usuario_id}`,{
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'aplication/json',
-        },
-        body: JSON.stringify(this.produto),
-      })
 
-      .then(response=>response.json());
-      .then(data=>{
-        const index = this.produto.findIndex(u=>u.id_produto)
-      })
+    atualizarProduto() {
+      const index = this.produtos.findIndex(p => p.id_produto === this.produto.id_produto);
+      this.produtos.splice(index, 1, { ...this.produto });
+      this.resetForm();
+    },
+
+    deletarProduto(produto) {
+      this.produtos = this.produtos.filter(p => p.id_produto !== produto.id_produto);
+    },
+
+    resetForm() {
+      this.produto = { id_produto: null, nome: '', preco: '', estoque: '', descricao: '' };
+      this.editando = false;
+    }
   },
-  }
 
-})
+  mounted() {
+    this.listarProdutos();
+  },
+
+
+  template: `
+   <form @submit.prevent="cadastrarProduto" @reset="resetForm">
+      <div>
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" v-model="produto.nome" required>
+      </div>
+
+      <div>
+        <label for="preco">Preço:</label>
+        <input type="number" id="preco" v-model="produto.preco" required>
+      </div>
+
+      <div>
+        <label for="estoque">Estoque:</label>
+        <input type="number" id="estoque" v-model="produto.estoque" required>
+      </div>
+
+      <div>
+        <label for="descricao">Descrição:</label>
+        <textarea id="descricao" v-model="produto.descricao" required></textarea>
+      </div>
+
+      <button type="submit">{{ editando ? 'Atualizar Produto' : 'Adicionar Produto' }}</button>
+      <button type="reset">Limpar</button>
+    </form>
+    
+    <ul>
+      <li v-for="produto in produtos" :key="produto.produtoId">
+        <strong>{{ produto.nome }}</strong>
+        Preço: {{ produto.preco }}R$
+        Estoque: {{ produto.estoque }}
+        Descrição: {{produto.descricao}}
+
+        <button @click="editarProduto(produto)">Editar</button>
+        <button @click="deletarProduto(produto)">Deletar</button>
+      </li>
+    </ul>
+  `
+});
+
+
+app.mount('#app');
