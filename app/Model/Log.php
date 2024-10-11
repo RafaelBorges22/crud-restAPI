@@ -22,7 +22,7 @@ class Log {
         return $this->logId;
     }
 
-    public function setLogId($produtoId): self {
+    public function setLogId($logId): self {
         $this->logId = $logId;
         return $this;
     }
